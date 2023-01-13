@@ -5,6 +5,8 @@ import { useContext, useEffect, useRef } from 'react';
 import { StateConsumer } from '../../store/slices/consumersSlice';
 import { StateProducer } from '../../store/slices/producersSlice';
 import { ServiceContext } from '../../store/store';
+import { P2PConsumer } from '../../utils/P2PConsumer';
+import { P2PProducer } from '../../utils/P2PProducer';
 import { ResolutionWatcher } from '../../utils/resolutionWatcher';
 
 interface VideoViewProps {
@@ -54,7 +56,7 @@ const VideoView = ({
 	const videoElement = useRef<HTMLVideoElement>(null);
 
 	useEffect(() => {
-		let media: Consumer | Producer | undefined;
+		let media: Consumer | P2PConsumer | Producer | P2PProducer | undefined;
 		let track: MediaStreamTrack | null | undefined;
 
 		if (consumer)

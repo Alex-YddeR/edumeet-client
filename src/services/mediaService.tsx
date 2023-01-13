@@ -17,6 +17,8 @@ import { RTCStatsMetaData, RTCStatsOptions } from '../utils/types';
 import { Logger } from 'edumeet-common';
 import { ClientMonitor, createClientMonitor } from '@observertc/client-monitor-js';
 import edumeetConfig from '../utils/edumeetConfig';
+import { P2PProducer } from '../utils/P2PProducer';
+import { P2PConsumer } from '../utils/P2PConsumer';
 
 const logger = new Logger('MediaService');
 
@@ -91,8 +93,8 @@ export class MediaService extends EventEmitter {
 	private mediasoup: Device = new Device();
 	private sendTransport: Transport | undefined;
 	private recvTransport: Transport | undefined;
-	private producers: Map<string, Producer> = new Map();
-	private consumers: Map<string, Consumer> = new Map();
+	private producers: Map<string, Producer | P2PProducer> = new Map();
+	private consumers: Map<string, Consumer | P2PConsumer> = new Map();
 	private dataConsumers: Map<string, DataConsumer> = new Map();
 	private dataProducers: Map<string, DataProducer> = new Map();
 	private tracks: Map<string, MediaStreamTrack> = new Map();
@@ -139,19 +141,19 @@ export class MediaService extends EventEmitter {
 		this.monitor?.close();
 	}
 
-	public getConsumer(consumerId: string): Consumer | undefined {
+	public getConsumer(consumerId: string): Consumer | P2PConsumer | undefined {
 		return this.consumers.get(consumerId);
 	}
 
-	public getConsumers(): Consumer[] {
+	public getConsumers(): (Consumer | P2PConsumer)[] {
 		return Array.from(this.consumers.values());
 	}
 
-	public getProducer(producerId: string): Producer | undefined {
+	public getProducer(producerId: string): Producer | P2PProducer | undefined {
 		return this.producers.get(producerId);
 	}
 
-	public getProducers(): Producer[] {
+	public getProducers(): (Producer | P2PProducer)[] {
 		return Array.from(this.producers.values());
 	}
 
@@ -249,6 +251,20 @@ export class MediaService extends EventEmitter {
 				peerTransport.close();
 				this.peerTransports.delete(id);
 			}
+		}
+	}
+
+	public removeAllPeers(): void {
+		logger.debug('removeAllPeers()');
+
+		this.peers = [];
+
+		if (this.p2p) {
+			this.peerTransports.forEach((peerTransport) => {
+				peerTransport.close();
+			});
+
+			this.peerTransports.clear();
 		}
 	}
 

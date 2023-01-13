@@ -5,6 +5,8 @@ import { useContext, useEffect, useState } from 'react';
 import { StateConsumer } from '../../store/slices/consumersSlice';
 import { StateProducer } from '../../store/slices/producersSlice';
 import { ServiceContext } from '../../store/store';
+import { P2PConsumer } from '../../utils/P2PConsumer';
+import { P2PProducer } from '../../utils/P2PProducer';
 import { VolumeWatcher } from '../../utils/volumeWatcher';
 
 type VolumeBarProps = {
@@ -66,7 +68,7 @@ const Volume = ({
 	const [ volume, setVolume ] = useState<number>(0);
 
 	useEffect(() => {
-		let media: Consumer | Producer | undefined;
+		let media: Consumer | P2PConsumer | Producer | P2PProducer | undefined;
 		let volumeWatcher: VolumeWatcher | undefined;
 
 		if (consumer) {

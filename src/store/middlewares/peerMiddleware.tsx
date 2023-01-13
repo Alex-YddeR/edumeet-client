@@ -7,6 +7,7 @@ import { setRaisedHand } from '../actions/meActions';
 import { micProducerSelector, screenProducerSelector, webcamProducerSelector } from '../selectors';
 import { producersActions } from '../slices/producersSlice';
 import { Logger } from 'edumeet-common';
+import { roomActions } from '../slices/roomSlice';
 
 const logger = new Logger('PeerMiddleware');
 
@@ -207,6 +208,10 @@ const createPeerMiddleware = ({
 				const { id } = action.payload;
 
 				mediaService.removePeer(id);
+			}
+
+			if (roomActions.setState.match(action) && action.payload === 'left') {
+				mediaService.removeAllPeers();
 			}
 
 			return next(action);

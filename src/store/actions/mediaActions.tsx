@@ -1,6 +1,7 @@
 import { Logger } from 'edumeet-common';
 import { Producer } from 'mediasoup-client/lib/Producer';
 import { getEncodings, getVideoConstrains } from '../../utils/encodingsHandler';
+import { P2PProducer } from '../../utils/P2PProducer';
 import { Resolution } from '../../utils/types';
 import { meActions } from '../slices/meSlice';
 import { producersActions, ProducerSource } from '../slices/producersSlice';
@@ -361,7 +362,7 @@ export const updateMic = ({
 	dispatch(meActions.setAudioInProgress(true));
 
 	let track: MediaStreamTrack | null | undefined;
-	let micProducer: Producer | null | undefined;
+	let micProducer: Producer | P2PProducer | null | undefined;
 
 	try {
 		await deviceService.updateMediaDevices();
@@ -549,7 +550,7 @@ export const updateWebcam = ({
 	dispatch(meActions.setVideoInProgress(true));
 
 	let track: MediaStreamTrack | null | undefined;
-	let webcamProducer: Producer | null | undefined;
+	let webcamProducer: Producer | P2PProducer | null | undefined;
 
 	try {
 		await deviceService.updateMediaDevices();
@@ -735,8 +736,8 @@ export const updateScreenSharing = ({
 
 	let audioTrack: MediaStreamTrack | null | undefined;
 	let videoTrack: MediaStreamTrack | null | undefined;
-	let screenAudioProducer: Producer | null | undefined;
-	let screenVideoProducer: Producer | null | undefined;
+	let screenAudioProducer: Producer | P2PProducer | null | undefined;
+	let screenVideoProducer: Producer | P2PProducer | null | undefined;
 
 	try {
 		const canShareScreen = getState().me.canShareScreen;

@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { meProducersSelector } from '../../store/selectors';
 import { settingsActions } from '../../store/slices/settingsSlice';
 import { ServiceContext } from '../../store/store';
+import { P2PProducer } from '../../utils/P2PProducer';
 import { VolumeWatcher } from '../../utils/volumeWatcher';
 import { noiseThresholdLabel } from '../translated/translatedComponents';
 
@@ -43,7 +44,7 @@ const NoiseSlider = (): JSX.Element => {
 	const [ sliderValue, setSliderValue ] = useState<number>(noiseThreshold);
 
 	useEffect(() => {
-		let producer: Producer | undefined;
+		let producer: Producer | P2PProducer | undefined;
 		let volumeWatcher: VolumeWatcher | undefined;
 
 		if (micProducer)
@@ -72,7 +73,7 @@ const NoiseSlider = (): JSX.Element => {
 		value: number | number[]
 	): void => {
 		if (sliderValue !== noiseThreshold) {
-			let producer: Producer | undefined;
+			let producer: Producer | P2PProducer | undefined;
 			let hark: Harker | undefined;
 	
 			if (micProducer)
