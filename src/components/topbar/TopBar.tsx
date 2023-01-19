@@ -47,6 +47,7 @@ import Filesharing from '../menuitems/Filesharing';
 import TranscriptionButton from '../controlbuttons/TranscriptionButton';
 import Transcription from '../menuitems/Transcription';
 import { AccessTime } from '@mui/icons-material';
+import CountdownTimerChip from '../countdowntimer/CountdownTimerChip';
 
 interface TopBarProps {
 	fullscreenEnabled: boolean;
@@ -214,6 +215,7 @@ const TopBar = ({
 						}
 					</GrowingDiv>
 					<DesktopDiv>
+						<CountdownTimerChip />
 						{ canTranscribe && <TranscriptionButton type='iconbutton' /> }
 						<FilesharingButton type='iconbutton' />
 						<ExtraVideoButton type='iconbutton' />
@@ -232,6 +234,7 @@ const TopBar = ({
 						{ loginEnabled && <LoginButton type='iconbutton' /> }
 					</DesktopDiv>
 					<MobileDiv>
+						<CountdownTimerChip />
 						{ canRecord && <RecordButton type='iconbutton' /> }
 						{ canPromote && lobbyPeersLength > 0 && <LobbyButton type='iconbutton' /> }
 						<IconButton

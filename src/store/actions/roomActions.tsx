@@ -2,6 +2,7 @@ import { Logger } from 'edumeet-common';
 import { batch } from 'react-redux';
 import { chatActions } from '../slices/chatSlice';
 import { filesharingActions } from '../slices/filesharingSlice';
+import { countdownTimerActions } from '../slices/countdownTimerSlice';
 import { lobbyPeersActions } from '../slices/lobbyPeersSlice';
 import { meActions } from '../slices/meSlice';
 import { Peer, peersActions } from '../slices/peersSlice';
@@ -61,6 +62,7 @@ export const joinRoom = (): AppThunk<Promise<void>> => async (
 		tracker,
 		chatHistory,
 		fileHistory,
+		countdownTimer,
 		locked,
 		lobbyPeers,
 		roomMode = 'SFU',
@@ -84,6 +86,7 @@ export const joinRoom = (): AppThunk<Promise<void>> => async (
 		dispatch(lobbyPeersActions.addPeers(lobbyPeers));
 		dispatch(chatActions.addMessages(chatHistory));
 		dispatch(filesharingActions.addFiles(fileHistory));
+		dispatch(countdownTimerActions.setCountdownTimer(countdownTimer));
 		dispatch(roomActions.addSpotlightList(spotlights));
 		dispatch(webrtcActions.setTracker(tracker));
 

@@ -623,3 +623,8 @@ export const selectRecordingsPreferredMimeTypeLabel = (): string => intl.formatM
 	id: 'settings.recordingsPreferredMimeType',
 	defaultMessage: 'Select your preferred video mime type'
 });
+
+export const countdownTimerActionsLabel = (): string => intl.formatMessage({
+	id: 'countdownTimer.actions',
+	defaultMessage: 'Countdown timer actions'
+});

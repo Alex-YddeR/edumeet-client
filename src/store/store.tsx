@@ -27,6 +27,7 @@ import createPeerMiddleware from './middlewares/peerMiddleware';
 import createPermissionsMiddleware from './middlewares/permissionsMiddleware';
 import createRecordingMiddleware from './middlewares/recordingMiddleware';
 import createChatMiddleware from './middlewares/chatMiddleware';
+import createCountdownTimerMiddleware from './middlewares/countdownTimerMiddleware';
 import roomSlice from './slices/roomSlice';
 import meSlice from './slices/meSlice';
 import consumersSlice from './slices/consumersSlice';
@@ -39,6 +40,7 @@ import drawerSlice from './slices/drawerSlice';
 import peersSlice from './slices/peersSlice';
 import producersSlice from './slices/producersSlice';
 import chatSlice from './slices/chatSlice';
+import countdownTimerSlice from './slices/countdownTimerSlice';
 import filesharingSlice from './slices/filesharingSlice';
 import notificationsSlice from './slices/notificationsSlice';
 import uiSlice from './slices/uiSlice';
@@ -99,6 +101,7 @@ const reducer = combineReducers({
 	notifications: notificationsSlice.reducer,
 	lobbyPeers: lobbyPeersSlice.reducer,
 	chat: chatSlice.reducer,
+	countdownTimer: countdownTimerSlice.reducer,
 	filesharing: filesharingSlice.reducer,
 	me: meSlice.reducer,
 	peers: peersSlice.reducer,
@@ -129,6 +132,7 @@ export const store = configureStore({
 			createMediaMiddleware(middlewareOptions),
 			createPeerMiddleware(middlewareOptions),
 			createChatMiddleware(middlewareOptions),
+			createCountdownTimerMiddleware(middlewareOptions),
 			createFilesharingMiddleware(middlewareOptions),
 			createPermissionsMiddleware(middlewareOptions),
 			createRoomMiddleware(middlewareOptions),

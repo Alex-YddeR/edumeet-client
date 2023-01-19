@@ -11,8 +11,8 @@ export interface DrawerState {
 }
 
 const initialState: DrawerState = {
-	open: false,
-	tab: 'chat',
+	open: true,
+	tab: 'users',
 	unreadMessages: 0,
 	unreadFiles: 0
 };

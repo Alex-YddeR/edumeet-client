@@ -28,7 +28,8 @@ const ChatInput = (): JSX.Element => {
 		<ChatInputDiv>
 			<TextInputField
 				label={chatInputLabel()}
-				value={message}
+				value={message
+				}
 				margin='dense'
 				setValue={setMessage}
 				onEnter={handleSendMessage}

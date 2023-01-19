@@ -9,11 +9,13 @@ import { permissions } from '../../utils/roles';
 import {
 	meLabel,
 	moderatorActionsLabel,
-	participantsLabel
+	participantsLabel,
+	countdownTimerActionsLabel
 } from '../translated/translatedComponents';
 import ListMe from './ListMe';
 import ListModerator from './ListModerator';
 import ListPeer from './ListPeer';
+import CountdownTimer from '../countdowntimer/CountdownTimer';
 
 const ParticipantListDiv = styled('div')(({ theme }) => ({
 	width: '100%',
@@ -47,6 +49,12 @@ const ParticipantList = (): JSX.Element => {
 
 	return (
 		<ParticipantListDiv>
+			<ListUl>
+				<ListHeaderLi>
+					{ countdownTimerActionsLabel() }
+				</ListHeaderLi>
+				<CountdownTimer />
+			</ListUl>
 			{ isModerator &&
 				<ListUl>
 					<ListHeaderLi>
