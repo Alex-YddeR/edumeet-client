@@ -6,6 +6,10 @@ import { StateConsumer } from '../../store/slices/consumersSlice';
 import { StateProducer } from '../../store/slices/producersSlice';
 import { ServiceContext } from '../../store/store';
 import { ResolutionWatcher } from '../../utils/resolutionWatcher';
+import { Logger } from 'edumeet-common';
+import { SelfieSegmentation, InputImage } from '@mediapipe/selfie_segmentation';
+
+const logger = new Logger('VideoView');
 
 interface VideoViewProps {
 	mirrored?: boolean;
@@ -14,6 +18,7 @@ interface VideoViewProps {
 	trackId?: string;
 	consumer?: StateConsumer;
 	producer?: StateProducer;
+	blurBackground?: boolean
 }
 
 interface VideoProps {
@@ -50,11 +55,92 @@ const VideoView = ({
 	zIndex,
 	trackId,
 	consumer,
-	producer
+	producer,
+	blurBackground
 }: VideoViewProps): JSX.Element => {
 	const { mediaService } = useContext(ServiceContext);
 	const videoElement = useRef<HTMLVideoElement>(null);
+	const canvasRef = useRef<HTMLCanvasElement>(null);
+	const contextRef = useRef<any>(null);
+	
+	useEffect(() => {
+		logger.error('useEffect()');
+		if (canvasRef.current && videoElement.current) {
+			contextRef.current = canvasRef.current.getContext('2d');
+			const selfieSegmentation = new SelfieSegmentation({
+				locateFile: (file) =>
+					`https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`,
+			});
 
+			selfieSegmentation.setOptions({
+				modelSelection: 1,
+				selfieMode: true,
+			});
+
+			selfieSegmentation.onResults(onResults);
+
+			const sendToMediaPipe = async () => {
+				if (videoElement.current) {
+					if (!videoElement.current.videoWidth) {
+						requestAnimationFrame(sendToMediaPipe);
+					} else {
+						await selfieSegmentation.send(
+							{ image: videoElement.current as InputImage }
+						);
+						requestAnimationFrame(sendToMediaPipe);
+					}
+				} else {
+					requestAnimationFrame(sendToMediaPipe);
+				}
+			};
+
+			sendToMediaPipe();
+
+		} 
+	}, [ blurBackground ]);
+
+	const onResults = (results: any) => {
+		if (canvasRef.current) {
+			contextRef.current.save();
+			contextRef.current.clearRect(
+				0,
+				0,
+				canvasRef.current.width,
+				canvasRef.current.height
+			);
+
+			contextRef.current.drawImage(
+				results.segmentationMask,
+				0,
+				0,
+				canvasRef.current.width,
+				canvasRef.current.height
+			);
+
+			// Only overwrite existing pixels.
+			contextRef.current.globalCompositeOperation = 'source-out';
+			contextRef.current.fillStyle = '#00FF00';
+			contextRef.current.fillRect(
+				0,
+				0,
+				canvasRef.current.width,
+				canvasRef.current.height
+			);
+
+			// Only overwrite missing pixels.
+			contextRef.current.globalCompositeOperation = 'destination-atop';
+			contextRef.current.drawImage(
+				results.image,
+				0,
+				0,
+				canvasRef.current.width,
+				canvasRef.current.height
+			);
+
+			contextRef.current.restore();
+		}
+	};
+	
 	useEffect(() => {
 		let media: Consumer | Producer | undefined;
 		let track: MediaStreamTrack | null | undefined;
@@ -127,16 +213,26 @@ const VideoView = ({
 
 	// Props workaround for: https://github.com/mui/material-ui/issues/25925
 	return (
-		<StyledVideo
-			ref={videoElement}
-			autoPlay
-			playsInline
-			muted
-			controls={false}
-			mirrored={mirrored ? 1 : 0}
-			contain={contain ? 1 : 0}
-			zindex={zIndex ? zIndex : 0}
-		/>
+		<>
+			<canvas ref={canvasRef} width={520} height={292} />
+			<div style={{ overflow: 'hidden',
+				position: 'relative' }}>
+				<video ref={videoElement} style={
+					{ position: 'absolute',
+						right: '-2500px' }
+				}/>
+			</div>
+			{/* <StyledVideo
+				ref={videoElement}
+				autoPlay
+				playsInline
+				muted
+				controls={false}
+				mirrored={mirrored ? 1 : 0}
+				contain={contain ? 1 : 0}
+				zindex={zIndex ? zIndex : 0}
+			/> */}
+		</>
 	);
 };
 

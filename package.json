@@ -6,6 +6,8 @@
 	"author": "Håvar Aambø Fosstveit <havar@fosstveit.net>",
 	"license": "MIT",
 	"dependencies": {
+		"@mediapipe/camera_utils": "^0.3.1640029074",
+		"@mediapipe/selfie_segmentation": "^0.1.1632777926",
 		"@emotion/react": "^11.8.1",
 		"@emotion/styled": "^11.8.1",
 		"@jitsi/rtcstats": "github:jitsi/rtcstats",

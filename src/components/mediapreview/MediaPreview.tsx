@@ -8,10 +8,12 @@ import VideoView from '../videoview/VideoView';
 
 interface MediaPreviewProps {
 	withControls?: boolean;
+	blurBackground?: boolean;
 }
 
 const MediaPreview = ({
-	withControls = true
+	withControls = true,
+	blurBackground
 }: MediaPreviewProps): JSX.Element => {
 	const theme = useTheme();
 	const previewWebcamTrackId = useAppSelector((state) => state.me.previewWebcamTrackId);
@@ -46,6 +48,7 @@ const MediaPreview = ({
 				{ previewWebcamTrackId && <VideoView
 					mirrored
 					trackId={previewWebcamTrackId}
+					blurBackground={blurBackground}
 				/> }
 			</VideoBox>
 		</>

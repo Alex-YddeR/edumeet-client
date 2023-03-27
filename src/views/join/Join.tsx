@@ -29,6 +29,7 @@ interface JoinProps {
 }
 
 const Join = ({ roomId }: JoinProps): JSX.Element => {
+	const [ blurBackground, setBlurBackground ] = useState(false);
 	const peerId = useAppSelector((state) => state.me.id);
 	const { previewMicTrackId, previewWebcamTrackId } = useAppSelector((state) => state.me);
 	const dispatch = useAppDispatch();
@@ -58,11 +59,15 @@ const Join = ({ roomId }: JoinProps): JSX.Element => {
 		dispatch(signalingActions.connect());
 	};
 
+	const handleBlurBackground = async () => {
+		setBlurBackground(!blurBackground);
+	};
+
 	const headless = new URL(window.location.href).searchParams.get('headless');
 
 	if (headless) {
 		const myNewURL = window.location.href.split('?')[0];
-		
+
 		window.history.pushState({}, '', myNewURL);
 		handleJoin();
 	}
@@ -81,11 +86,11 @@ const Join = ({ roomId }: JoinProps): JSX.Element => {
 		<PrecallDialog
 			content={
 				<>
-					<MediaPreview />
+					<MediaPreview blurBackground={blurBackground} />
 					<AudioInputChooser preview />
 					<VideoInputChooser preview />
 					<Typography variant='h5'>
-						{ (previewMicTrackId && previewWebcamTrackId) ?
+						{(previewMicTrackId && previewWebcamTrackId) ?
 							enableAllMediaLabel() : previewMicTrackId ?
 								enableMicrophoneLabel() : previewWebcamTrackId ?
 									enableCameraLabel() : disableAllMediaLabel()
@@ -99,6 +104,8 @@ const Join = ({ roomId }: JoinProps): JSX.Element => {
 						startAdornment={<AccountCircle />}
 						autoFocus
 					/>
+					Blur background
+					<input type="checkbox" onChange={handleBlurBackground}/>
 				</>
 			}
 			actions={
@@ -109,7 +116,7 @@ const Join = ({ roomId }: JoinProps): JSX.Element => {
 					disabled={!name}
 					fullWidth
 				>
-					{ joinLabel() }
+					{joinLabel()}
 				</Button>
 			}
 		/>
